@@ -1,15 +1,28 @@
 // src/authMiddleware.ts
 import jwt from 'jsonwebtoken';
+import { Server, Socket } from 'socket.io';
 
-export function authenticateToken(req: { headers: { [x: string]: any; }; user: any; }, res: { sendStatus: (arg0: number) => any; }, next: () => void) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+// Define a custom interface that extends Socket
+interface CustomSocket extends Socket {
+  user?: any; // Add the 'user' property
+}
 
-  if (token == null) return res.sendStatus(401);
+export function authenticateToken(
+  socket: CustomSocket, // Use the custom interface here
+  secretKey: string
+) {
+  const token = String(socket.handshake.query.token); // Cast token to string
 
-  jwt.verify(token, 'your-secret-key', (err: any, user: any) => {
-    if (err) return res.sendStatus(403);
-    req.user = user;
-    next();
-  });
+  if (!token) {
+    throw new Error('Authentication failed');
+  }
+
+  try {
+    const user = jwt.verify(token, secretKey);
+
+    // Attach the user to the socket for later use, if needed
+    socket.user = user;
+  } catch (err) {
+    throw new Error('Authentication failed');
+  }
 }
