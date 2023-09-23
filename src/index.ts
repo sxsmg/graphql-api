@@ -74,7 +74,6 @@ async function startServer() {
 }
 
 async function getScope(authorizationHeader: string | undefined): Promise<string | undefined> {
-  // Implement your authorization logic here, e.g., decode JWT
   return authorizationHeader ? 'ADMIN' : undefined;
 }
 

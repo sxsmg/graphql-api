@@ -6,16 +6,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.authenticateToken = void 0;
 // src/authMiddleware.ts
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-function authenticateToken(req, res, next) {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (token == null)
-        return res.sendStatus(401);
-    jsonwebtoken_1.default.verify(token, 'your-secret-key', (err, user) => {
-        if (err)
-            return res.sendStatus(403);
-        req.user = user;
-        next();
-    });
+function authenticateToken(socket, // Use the custom interface here
+secretKey) {
+    const token = String(socket.handshake.query.token); // Cast token to string
+    if (!token) {
+        throw new Error('Authentication failed');
+    }
+    try {
+        const user = jsonwebtoken_1.default.verify(token, secretKey);
+        // Attach the user to the socket for later use, if needed
+        socket.user = user;
+    }
+    catch (err) {
+        throw new Error('Authentication failed');
+    }
 }
 exports.authenticateToken = authenticateToken;

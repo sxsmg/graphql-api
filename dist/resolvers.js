@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const user_1 = require("./models/user"); // Import your User model if you have one
+const index_1 = require("./index"); // Import the Socket.IO instance
 const resolvers = {
     Query: {
         hello: () => 'Hello, World!',
@@ -31,6 +32,8 @@ const resolvers = {
                 // Create a new user in your database (replace with your database logic)
                 const user = new user_1.User({ name, email });
                 yield user.save();
+                // Emit a WebSocket event to notify clients about the new user
+                index_1.io.emit('userCreated', user); // Emit the 'userCreated' event with the user data
                 return user;
             }
             catch (error) {
