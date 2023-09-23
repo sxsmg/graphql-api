@@ -1,5 +1,5 @@
 const io = require('socket.io-client');
-let jwtToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNrSDNYWlZvNXR0YURLS1RBQUFEIiwiaWF0IjoxNjk1NDU3OTExfQ.N09bYuFl-VGUWGbgvg5hji7wZ8n8cNtYzZtnpauMwlE'; // Initialize the JWT token
+let jwtToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Imcycndwc1ptYlFqVmVyM3RBQUFEIiwiaWF0IjoxNjk1NDY0MTQ4fQ.1n1fspU8chy0xTS6Dlp412AgvaBSSqlSpa2EaxJXd9k'; // Initialize the JWT token
 
 // Connect to the WebSocket server
 const socket = io('ws://localhost:4000', {
