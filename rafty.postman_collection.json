@@ -1,0 +1,50 @@
+{
+	"info": {
+		"_postman_id": "81a1465b-88ac-417d-beae-aebf8376adab",
+		"name": "rafty",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24527038"
+	},
+	"item": [
+		{
+			"name": "testdb",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:4000/graphql",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation CreateUser {\n  createUser(name: \"appleMenace\", email: \"appleMenace@gmail.com\") {\n    id\n    name\n    email\n  }\n}\n",
+						"variables": "{\"name\" :\"sakshum\"}"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:4000/graphql",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "4000",
+					"path": [
+						"graphql"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
