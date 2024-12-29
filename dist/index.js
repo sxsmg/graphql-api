@@ -15,7 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.io = void 0;
 const express_1 = __importDefault(require("express"));
 const http_1 = __importDefault(require("http"));
-const apollo_server_express_1 = require("apollo-server-express");
+const server_1 = require("@apollo/server");
+const express4_1 = require("@apollo/server/express4");
 const socket_io_1 = require("socket.io");
 const schema_1 = __importDefault(require("./schema"));
 const resolvers_1 = __importDefault(require("./resolvers"));
@@ -47,21 +48,15 @@ io.on('connection', (socket) => {
         console.log('A user disconnected');
     });
 });
-const server = new apollo_server_express_1.ApolloServer({
+const server = new server_1.ApolloServer({
     typeDefs: schema_1.default,
     resolvers: resolvers_1.default,
-    context: ({ req, res }) => __awaiter(void 0, void 0, void 0, function* () {
-        const authScope = yield getScope(req.headers.authorization);
-        return {
-            authScope,
-        };
-    }),
     plugins: [
         {
-            requestDidStart({ context }) {
-                return __awaiter(this, void 0, void 0, function* () {
+            requestDidStart(_a) {
+                return __awaiter(this, arguments, void 0, function* ({ contextValue }) {
                     // Access the contextValue
-                    console.log(context.authScope);
+                    console.log(contextValue === null || contextValue === void 0 ? void 0 : contextValue.authScope);
                 });
             },
         },
@@ -71,7 +66,12 @@ function startServer() {
     return __awaiter(this, void 0, void 0, function* () {
         yield db_1.db;
         yield server.start();
-        server.applyMiddleware({ app });
+        app.use('/graphql', (0, express4_1.expressMiddleware)(server, {
+            context: (_a) => __awaiter(this, [_a], void 0, function* ({ req }) {
+                const authScope = yield getScope(req.headers.authorization);
+                return { authScope };
+            }),
+        }));
         const PORT = process.env.PORT || 4000;
         httpServer.listen(PORT, () => {
             console.log(`Server is running on http://localhost:${PORT}/graphql`);

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.signMiddleware = void 0;
+exports.signMiddleware = signMiddleware;
 // src/signMiddleware.ts
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 function signMiddleware(socket, secretKey, next) {
@@ -21,4 +21,3 @@ function signMiddleware(socket, secretKey, next) {
     }
     next();
 }
-exports.signMiddleware = signMiddleware;

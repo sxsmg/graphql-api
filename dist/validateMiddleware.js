@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.validateInputs = void 0;
+exports.validateInputs = validateInputs;
 // src/validationMiddleware.ts
 const express_validator_1 = require("express-validator");
 function validateInputs(req, res, next) {
@@ -10,4 +10,3 @@ function validateInputs(req, res, next) {
     }
     next();
 }
-exports.validateInputs = validateInputs;

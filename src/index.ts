@@ -1,7 +1,8 @@
-import express from 'express';
+import express, { Application } from 'express';
 import http from 'http';
-import { ApolloServer } from 'apollo-server-express';
-import { ExpressContext } from 'apollo-server-express/dist/ApolloServer';
+import { ApolloServer } from '@apollo/server';
+import { expressMiddleware } from '@apollo/server/express4';
+import { GraphQLRequestContext } from '@apollo/server';
 import { Server } from 'socket.io';
 import typeDefs from './schema';
 import resolvers from './resolvers';
@@ -9,7 +10,7 @@ import { db } from './db';
 import { authenticateToken } from './authMiddleware';
 import { signMiddleware } from './signMiddleware';
 
-const app = express();
+const app: Application = express();
 const httpServer = http.createServer(app);
 const io = new Server(httpServer);
 
@@ -41,20 +42,15 @@ interface MyContext {
   authScope?: string;
 }
 
-const server = new ApolloServer({
+const server = new ApolloServer<MyContext>({
   typeDefs,
   resolvers,
-  context: async ({ req, res }: ExpressContext): Promise<MyContext> => {
-    const authScope = await getScope(req.headers.authorization);
-    return {
-      authScope,
-    };
-  },
   plugins: [
     {
-      async requestDidStart({ context }) {
-        // Access the contextValue
-        console.log(context.authScope);
+      async requestDidStart({ contextValue }: GraphQLRequestContext<MyContext>) {
+        if (contextValue?.authScope) {
+          console.log(`Request started with auth scope: ${contextValue.authScope}`);
+        }
       },
     },
   ],
@@ -64,7 +60,19 @@ const server = new ApolloServer({
 async function startServer() {
   await db;
   await server.start();
-  server.applyMiddleware({ app });
+  
+  // Add express.json() middleware to parse JSON request bodies
+  app.use(express.json());
+  
+  app.use(
+    '/graphql',
+    expressMiddleware(server, {
+      context: async ({ req }) => {
+        const authScope = await getScope(req.headers.authorization);
+        return { authScope };
+      },
+    })
+  );
 
   const PORT = process.env.PORT || 4000;
 

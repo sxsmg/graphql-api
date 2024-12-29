@@ -27,7 +27,7 @@ const resolvers = {
     },
     Mutation: {
         sayHello: (_, { name }) => `Hello, ${name}!`,
-        createUser: (_, { name, email }) => __awaiter(void 0, void 0, void 0, function* () {
+        createUser: (_1, _a) => __awaiter(void 0, [_1, _a], void 0, function* (_, { name, email }) {
             try {
                 // Create a new user in your database (replace with your database logic)
                 const user = new user_1.User({ name, email });

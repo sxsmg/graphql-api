@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.authenticateToken = void 0;
+exports.authenticateToken = authenticateToken;
 // src/authMiddleware.ts
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 function authenticateToken(socket, // Use the custom interface here
@@ -21,4 +21,3 @@ secretKey) {
         throw new Error('Authentication failed');
     }
 }
-exports.authenticateToken = authenticateToken;
